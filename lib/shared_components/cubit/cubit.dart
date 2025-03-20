@@ -97,7 +97,7 @@ class AppCubit extends Cubit<AppStates>
 
     emit(AppGetDatabaseLoadingState());
 
-     db!.rawQuery('SELECT * FROM tasks').then((value)
+     db.rawQuery('SELECT * FROM tasks').then((value)
      {
 
 
@@ -127,6 +127,7 @@ class AppCubit extends Cubit<AppStates>
       'UPDATE tasks SET status = ? WHERE id = ?',
       [status, id],
     ).then((value) {
+      getFromDatabase(db);
       emit(AppUpdateDatabaseState());
      } );
   }
