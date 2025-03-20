@@ -102,8 +102,7 @@ class AppCubit extends Cubit<AppStates>
 
 
        value.forEach((element) {
-         if(element['status'] == 'new')
-         {
+
            if(element['status'] == 'new')
              {
                newTasks.add(element);
@@ -111,8 +110,7 @@ class AppCubit extends Cubit<AppStates>
              else if(element['status'] == 'done')
              {
                doneTasks.add(element);
-             }
-         } else {
+             } else {
            archivedTasks.add(element);
          }
        });
