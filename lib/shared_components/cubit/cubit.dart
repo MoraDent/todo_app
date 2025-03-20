@@ -16,7 +16,9 @@ class AppCubit extends Cubit<AppStates>
 
   int currentIndex = 0;
 
-  List<Map> tasks = [];
+  List<Map> newTasks = [];
+  List<Map> doneTasks = [];
+  List<Map> archivedTasks = [];
 
   bool isBottomSheetShown = false;
   IconData fabIcon = Icons.edit;
@@ -56,12 +58,7 @@ class AppCubit extends Cubit<AppStates>
         });
       },
       onOpen: (db) {
-        getFromDatabase(db).then((value)
-        {
-             tasks = value;
-             print(tasks);
-             emit(AppGetDatabaseState());
-        });
+        getFromDatabase(db);
         print('database opened');
       },
     ).then((value) {
@@ -84,16 +81,56 @@ class AppCubit extends Cubit<AppStates>
           .then((value) {
         print('$value inserted successfully');
         emit(AppInsertDatabaseState());
-      })
-          .catchError((error) {
+
+        getFromDatabase(db);
+      }).catchError((error) {
         print('error when inserting new record');
       });
     });
   }
 
-  Future<List<Map>> getFromDatabase(db) async
+  void getFromDatabase(db)
   {
-    return await db!.rawQuery('SELECT * FROM tasks');
+    newTasks = [];
+    doneTasks = [];
+    archivedTasks = [];
+
+    emit(AppGetDatabaseLoadingState());
+
+     db!.rawQuery('SELECT * FROM tasks').then((value)
+     {
+
+
+       value.forEach((element) {
+         if(element['status'] == 'new')
+         {
+           if(element['status'] == 'new')
+             {
+               newTasks.add(element);
+             }
+             else if(element['status'] == 'done')
+             {
+               doneTasks.add(element);
+             }
+         } else {
+           archivedTasks.add(element);
+         }
+       });
+       emit(AppGetDatabaseState());
+     });
+  }
+
+  void updateData({
+    required String status,
+    required int id,
+}) async
+  {
+     db!.rawUpdate(
+      'UPDATE tasks SET status = ? WHERE id = ?',
+      [status, id],
+    ).then((value) {
+      emit(AppUpdateDatabaseState());
+     } );
   }
 
   void changeBottomSheetState({

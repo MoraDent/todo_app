@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/shared_components/cubit/cubit.dart';
 
 Widget defaultButton({
   double width = double.infinity,
@@ -56,7 +57,7 @@ icon: Icon(suffix),
   ),
   );
 
-Widget buildTaskItem(Map model) => Padding(
+Widget buildTaskItem(Map model, context) => Padding(
   padding: const EdgeInsets.all(20.0),
   child: Row(
       children: [
@@ -69,24 +70,51 @@ Widget buildTaskItem(Map model) => Padding(
           ),
         ),
         SizedBox(width: 20.0,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '${model['title']}',
-              style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '${model['title']}',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              '${model['date']}',
-              style: TextStyle(
-                color: Colors.blueGrey,
+              Text(
+                '${model['date']}',
+                style: TextStyle(
+                  color: Colors.blueGrey,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+        SizedBox(width: 20.0,),
+        IconButton(onPressed:()
+        {
+          AppCubit.get(context).updateData(
+            status: 'done',
+            id: model['id'],
+          );
+        },
+            icon: Icon(
+              Icons.check_box_outlined,
+              color: Colors.green,
+            )
+        ),
+        IconButton(onPressed:()
+        {
+          AppCubit.get(context).updateData(
+            status: 'archive',
+            id: model['id'],
+          );
+        },
+            icon: Icon(
+              Icons.archive_outlined,
+              color: Colors.black45,
+            )
         ),
       ]
   ),

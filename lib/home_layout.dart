@@ -26,7 +26,12 @@ class HomeLayout extends StatelessWidget
     return BlocProvider(
       create: (BuildContext context) => AppCubit()..makeDatabase(),
       child: BlocConsumer<AppCubit, AppStates>(
-        listener: (BuildContext context, AppStates state) {  },
+        listener: (BuildContext context, AppStates state) {
+          if(state is AppInsertDatabaseState)
+            {
+              Navigator.pop(context);
+            }
+        },
         builder: (BuildContext context, AppStates state) {
           AppCubit cubit = AppCubit.get(context);
           return Scaffold(
@@ -39,7 +44,7 @@ class HomeLayout extends StatelessWidget
               ),
             ),
             body: ConditionalBuilder(
-              condition: true,
+              condition: state is! AppGetDatabaseLoadingState,
               builder: (context) => cubit.screens[cubit.currentIndex],
               fallback: (context) => Center(child: CircularProgressIndicator()),
             ),
@@ -49,22 +54,12 @@ class HomeLayout extends StatelessWidget
                 {
                   if(formKey.currentState!.validate())
                   {
+                    cubit.insertToDatabase(
+                      date: dateController.text,
+                      time: timeController.text,
+                      title: titleController.text,
+                    );
                     formKey.currentState!.save();
-                    // insertToDatabase(
-                    //   date: dateController.text,
-                    //   time: timeController.text,
-                    //   title: titleController.text,
-                    // ).then((value){
-                    //   getFromDatabase(db).then((value)
-                    //   {
-                    //     Navigator.pop(context);
-                    //     // setState(() {
-                    //     //   isBottomSheetShown = false;
-                    //     //   fabIcon = Icons.edit;
-                    //     //   tasks = value;
-                    //     // });
-                    //   });
-                    // });
                   }
                 } else
                 {
