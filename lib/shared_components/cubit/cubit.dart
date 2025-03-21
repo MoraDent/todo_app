@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_app/shared_components/cubit/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../archived-tasks.dart';
 import '../../done_tasks.dart';
 import '../../new_tasks.dart';
@@ -15,29 +13,29 @@ class AppCubit extends Cubit<AppStates>
   static AppCubit get(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
+  Database? db;
+  bool isBottomSheetShown = false;
+  IconData fabIcon = Icons.edit;
+
+
 
   List<Map> newTasks = [];
   List<Map> doneTasks = [];
   List<Map> archivedTasks = [];
-
-  bool isBottomSheetShown = false;
-  IconData fabIcon = Icons.edit;
-
   List<Widget> screens = [
     NewTasksScreen(),
     DoneTasksScreen(),
     ArchivedTasksScreen(),
   ];
-
   List<String> titles = ['New Tasks', 'Done Tasks', 'Archived Tasks'];
+
+
 
   void changeIndex(int index)
   {
     currentIndex = index;
     emit(AppChangeBottomNavBarState());
   }
-
-  Database? db;
 
   void makeDatabase()
   {
@@ -129,6 +127,17 @@ class AppCubit extends Cubit<AppStates>
     ).then((value) {
       getFromDatabase(db);
       emit(AppUpdateDatabaseState());
+     } );
+  }
+
+  void deleteData({
+    required int id,
+}) async {
+     db!.rawDelete(
+       'DELETE FROM tasks WHERE id = ? ', [id],
+     ).then((value) {
+      getFromDatabase(db);
+      emit(AppDeleteDatabaseState());
      } );
   }
 
