@@ -88,6 +88,7 @@ class HomeLayout extends StatelessWidget
                             ),
                             SizedBox(height: 15.0),
                             defaultFormField(
+                              noKeyboard: true,
                               controller: dateController,
                               onTap: ()
                               {
@@ -114,6 +115,7 @@ class HomeLayout extends StatelessWidget
                             ),
                             SizedBox(height: 15.0),
                             defaultFormField(
+                              noKeyboard: true,
                               controller: timeController,
                               onTap: ()
                               {

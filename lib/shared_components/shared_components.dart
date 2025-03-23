@@ -39,7 +39,9 @@ Widget defaultFormField({
   void Function(String)? onChange,
   void Function()? suffixPressed,
   bool isPassword = false,
+  bool noKeyboard = false,
 }) => TextFormField(
+  readOnly: noKeyboard,
   controller: controller,
   validator: validate,
   keyboardType: type,
